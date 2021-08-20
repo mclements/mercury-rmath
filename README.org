@@ -16,7 +16,7 @@ mmc --make  --c-include-directory `pkg-config --cflags libRmath` `pkg-config --l
 
 As an extended test file:
 
-#+BEGIN_SRC sh :exports output :results output
+#+BEGIN_SRC sh :results output :exports output
 cat test_rmath.m
 #+END_SRC
 
