@@ -16,7 +16,7 @@ mmc --make  --c-include-directory `pkg-config --cflags libRmath` `pkg-config --l
 
 As an extended test file:
 
-#+BEGIN_SRC sh :results output :exports output
+#+BEGIN_SRC sh :results output echo :exports both
 cat test_rmath.m
 #+END_SRC
 
@@ -94,7 +94,7 @@ main(!IO) :-
 
 This can be run using =make test=, which is currently defined as:
 
-#+BEGIN_SRC sh :exports output :results output
+#+BEGIN_SRC sh :results output echo :exports both
 mmc --make --mld ./lib/mercury --ml rmath `pkg-config --libs libRmath` -E test_rmath && ./test_rmath
 #+END_SRC
 
