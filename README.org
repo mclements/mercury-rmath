@@ -12,6 +12,10 @@ For an installation in the local directory, use =make install=, which is current
 mmc --make  --c-include-directory `pkg-config --cflags libRmath` `pkg-config --libs libRmath` --no-libgrade --libgrade asm_fast.gc --install-prefix . librmath.install
 #+end_example
 
+** Documentation
+
+See the interface in https://github.com/mclements/mercury-rmath/blob/main/rmath.m.
+
 ** Test
 
 As an extended test file:
