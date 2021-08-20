@@ -2,15 +2,23 @@
 
 ** Introduction
 
-This is a alpha quality Mercury library for using the standalone =Rmath= library. Feedback is welcome.
+This is a alpha quality Mercury library for using the standalone =Rmath= library. The library is based on C and the installation is currently only for the =ast_fast.gc= grade.
+
+This has been tested on Linux with the Rmath library installed. On Ubuntu/Debian, you would need =apt install r-mathlib=.
+
+Feedback is welcome.
 
 ** Installation
 
 For an installation in the local directory, use =make install=, which is currently defined as:
 
-#+begin_example
-mmc --make  --c-include-directory `pkg-config --cflags libRmath` `pkg-config --libs libRmath` --no-libgrade --libgrade asm_fast.gc --install-prefix . librmath.install
-#+end_example
+#+BEGIN_SRC sh :results output echo :exports both
+  rm -rf Mercury lib
+  mmc --make  --c-include-directory `pkg-config --cflags libRmath` `pkg-config --libs libRmath` --no-libgrade --libgrade asm_fast.gc --install-prefix . librmath.install
+#+END_SRC
+
+#+RESULTS:
+
 
 ** Documentation
 
