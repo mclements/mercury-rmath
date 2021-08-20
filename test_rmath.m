@@ -1,0 +1,68 @@
+:- module test_rmath.
+
+:- interface.
+:- import_module io.
+:- pred main(io::di, io::uo) is det.
+
+:- implementation.
+:- import_module list, int, float, string, maybe, solutions, math, rmath, pair, bool.
+
+:- type alternative ---> two_sided ; less ; greater.
+:- pred poisson_ci(float::in, float::in, alternative::in, pair(float)::out).
+poisson_ci(X, Conflevel, Alternative, Interval) :-
+    Alpha = (1.0-Conflevel)/2.0,
+    Pl = (func(Xi,Alphai) = (if Xi=0.0 then 0.0 else qgamma(Alphai,Xi, 1.0, 1, 0))),
+    Pu = (func(Xi,Alphai) = qgamma(1.0-Alphai, Xi+1.0, 1.0, 1, 0)),
+    Interval = (Alternative = less -> (0.0 - Pu(X, 1.0-Conflevel))
+	       ;
+	       Alternative = greater -> (Pl(X, 1.0-Conflevel) - 1.0)
+	       ;
+	       %% two_sided
+	       (Pl(X,Alpha) - Pu(X, Alpha))).
+
+:- func for_loop(func(int,int) = int, int, int, int) = int.
+for_loop(Fun, I, Finish, Agg) = (if I>Finish then Agg else for_loop(Fun, I+1, Finish, Fun(I,Agg))).
+:- func count(func(int) = bool, int, int) = int.
+count(Predicate, Start, Finish) = Result :-
+    Result = for_loop(func(I, Y) = (if Predicate(I)=yes then Y+1 else Y), Start, Finish, 0).
+
+:- func loop1(int,float,float) = int.
+loop1(Ni,M,D) = (if dpois(float(Ni),M,0)>D then loop1(Ni*2,M,D) else Ni).
+:- func poisson_test(float,float,float,alternative) = float.
+poisson_test(X, T, R, Alternative) = Result :-
+    M = R*T,
+    (Alternative = less -> Result = ppois(X,M,1,0)
+    ;
+    Alternative = greater -> Result = ppois(X-1.0,M,0,0)
+    ;
+    %% Alternative = two_sided
+    (M = 0.0 -> Result = (X=0.0 -> 1.0; 0.0)
+	   ;
+	   (Relerr = 1.00000001,
+            D = dpois(X,M,0),
+	    Dstar = D * Relerr,
+	    Pred = (func(I) = (if dpois(float(I),M,0) =< Dstar then yes else no)),
+            (X=M -> Result = 1.0
+	     ;
+	     X<M ->
+	     (N = loop1(ceiling_to_int(2.0*M-X),M,D),
+	      Y = count(Pred, ceiling_to_int(M), N),
+	      Result = ppois(X,M,1,0) + ppois(float(N)-float(Y),M,0,0))
+	     ;
+	     %% X>M
+	     (Y = count(Pred,0,floor_to_int(M)),
+	      Result = ppois(float(Y)-1.0,M,1,0) + ppois(X-1.0, M,0,0)))))).
+
+main(!IO) :-
+    poisson_ci(5.0, 0.95, two_sided, Interval),
+    P = poisson_test(5.0, 1.0, 1.0, two_sided),
+    P2 = poisson_test(5.0, 10.0, 1.0, two_sided),
+    io.write_line({m_e,
+		   pnorm(1.96, 0.0, 1.0, 1, 0),
+		   qnorm(0.975, 0.0, 1.0, 1, 0),
+		   %% runif(0.0, 1.0),
+		   %% runif(0.0, 1.0),
+		   Interval,
+		   P, P2
+		  },
+		  !IO).

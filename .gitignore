@@ -1,0 +1,11 @@
+*~
+librmath.a
+librmath.so
+rmath.err
+rmath.init
+rmath.mh
+test_rmath.err
+test_rmath.mh
+test_rmath
+lib/
+Mercury/
