@@ -99,6 +99,7 @@ poisson_test(X, T, R, Alternative) = Result :-
 	      Result = rmath.ppois(float(Y)-1.0,M,1,0) + rmath.ppois(X-1.0, M,0,0)))))).
 
 main(!IO) :-
+    set_seed(1219005190u32, 1225564623u32, !IO),
     runif(0.0, 1.0, U, !IO),
     runif(0.0, 1.0, U2, !IO),
     poisson_ci(5.0, 0.95, two_sided, Interval),
@@ -121,17 +122,22 @@ mmc --make --mld ./lib/mercury --ml rmath `pkg-config --libs libRmath` test_rmat
 #+END_SRC
 
 #+RESULTS:
-: {2.718281828459045, 0.9750021048517796, 1.9599639845400536, 1.6234863901184209 - 11.668332079322667, 0.0036598468273437144, 0.15054443581369478}
+: {0.6801521621365453, 0.5965995308003852, 2.718281828459045, 0.9750021048517796, 1.9599639845400536, 1.6234863901184209 - 11.668332079322667, 0.0036598468273437144, 0.15054443581369478}
 
 To compare with R output:
 
 #+BEGIN_SRC R :output results :exports both
+  RNGkind("Marsaglia-Multicarry")
+  set.seed(3)
+  ## .Random.seed = c(10401L, 1219005190L, 1225564623L)
   P = poisson.test(5)
   P2 = poisson.test(5,10)
-  c(exp(1), pnorm(1.96), qnorm(0.975), P$conf.int[1], P$conf.int[2], P$p.value, P2$p.value)
+  c(runif(2), exp(1), pnorm(1.96), qnorm(0.975), P$conf.int[1], P$conf.int[2], P$p.value, P2$p.value)
 #+END_SRC
 
 #+RESULTS:
+|   0.680152162136545 |
+|   0.596599530800385 |
 |    2.71828182845905 |
 |    0.97500210485178 |
 |    1.95996398454005 |
@@ -141,6 +147,3 @@ To compare with R output:
 |   0.150544435813695 |
 
 
-* TODO Fix handling of state for the random number functions
-
-- At present, the random number functions for been marked as being impure, but they have not been wrapped using states. The example above has a draft outline of a wrapper, although this does not compile.

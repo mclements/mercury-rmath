@@ -54,6 +54,7 @@ poisson_test(X, T, R, Alternative) = Result :-
 	      Result = rmath.ppois(float(Y)-1.0,M,1,0) + rmath.ppois(X-1.0, M,0,0)))))).
 
 main(!IO) :-
+    set_seed(1219005190u32, 1225564623u32, !IO),
     runif(0.0, 1.0, U, !IO),
     runif(0.0, 1.0, U2, !IO),
     poisson_ci(5.0, 0.95, two_sided, Interval),
