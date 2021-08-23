@@ -7,10 +7,6 @@
 :- implementation.
 :- import_module int, float, rmath, pair, bool.
 
-%% %% example wrapper for a random number function
-%% :- impure pred wrapped_runif(float::in, float::in, float::out, io::di, io::uo).
-%% wrapped_runif(Lower, Upper, U, !IO) :- U = runif(Lower,Upper).
-
 :- type alternative ---> two_sided ; less ; greater.
 :- pred poisson_ci(float::in, float::in, alternative::in, pair(float)::out).
 poisson_ci(X, Conflevel, Alternative, Interval) :-
