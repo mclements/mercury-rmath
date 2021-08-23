@@ -144,7 +144,7 @@
 % gammafn: gammafn(X)
 :- func gammafn(float) = float.
 % get_seed: get_seed(A,B,!IO)
-%% :- pred get_seed(uint32::out,uint32::out,io::di,io::uo) is semidet.
+:- pred get_seed(uint32::out,uint32::out,io::di,io::uo) is det.
 % imax2: imax2(X,Y)
 :- func imax2(int,int) = int.
 % imin2: imin2(X,Y)
@@ -306,7 +306,7 @@
 % Wilcoxon rank sum random numbers: rwilcox(M,N,Random,!IO)
 :- pred rwilcox(float::in,float::in,float::out,io::di,io::uo) is det.
 % set_seed: set_seed(A,B,!IO)
-%% :- pred set_seed(uint32::in,uint32::in,io::di,io::uo) is semidet.
+:- pred set_seed(uint32::in,uint32::in,io::di,io::uo) is det.
 % sign: sign(X)
 :- func sign(float) = float.
 % sinpi: sinpi(X)
@@ -334,7 +334,7 @@
 % norm_rand_impure: norm_rand_impure()
 :- impure func norm_rand_impure = float.
 % get_seed_impure: get_seed_impure(A,B)
-%% :- impure pred get_seed_impure(uint32::out,uint32::out) is semidet.
+:- impure pred get_seed_impure(uint32::out,uint32::out) is det.
 % Beta random numbers: rbeta_impure(Shape1,Shape2)
 :- impure func rbeta_impure(float,float) = float.
 % Binomial random numbers: rbinom_impure(Size,Prob)
@@ -376,7 +376,7 @@
 % Wilcoxon rank sum random numbers: rwilcox_impure(M,N)
 :- impure func rwilcox_impure(float,float) = float.
 % set_seed: set_seed_impure(A,B)
-%% :- impure pred set_seed_impure(uint32::in,uint32::in) is semidet.
+:- impure pred set_seed_impure(uint32::in,uint32::in) is det.
 
 :- pragma foreign_proc("C",
     m_1_pi = (M_1_PI_::out),
@@ -902,15 +902,15 @@ unif_rand(R, !IO) :-
         impure R = unif_rand_impure,
         !:IO = !.IO
     ). 
-%% :- pragma foreign_proc("C",
-%%     get_seed_impure(A::out,B::out),
-%%     [will_not_call_mercury],
-%%     "get_seed(&A,&B);").
-%% get_seed(A, B, !IO) :-
-%%     promise_pure (
-%%         impure get_seed_impure(A,B),
-%%         !:IO = !.IO
-%%     ). 
+:- pragma foreign_proc("C",
+    get_seed_impure(A::out,B::out),
+    [will_not_call_mercury],
+    "get_seed(&A,&B);").
+get_seed(A, B, !IO) :-
+    promise_pure (
+        impure get_seed_impure(A,B),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
     rbeta_impure(Shape1::in,Shape2::in) = (Rbeta_::out),
     [will_not_call_mercury],
@@ -1091,15 +1091,15 @@ rwilcox(M, N, R, !IO) :-
         impure R = rwilcox_impure(M, N),
         !:IO = !.IO
     ). 
-%% :- pragma foreign_proc("C",
-%%     set_seed_impure(A::in,B::in),
-%%     [will_not_call_mercury],
-%%     "set_seed(A,B);").
-%% set_seed(A, B, !IO) :-
-%%     promise_pure (
-%%         impure set_seed_impure(A, B),
-%%         !:IO = !.IO
-%%     ). 
+:- pragma foreign_proc("C",
+    set_seed_impure(A::in,B::in),
+    [will_not_call_mercury],
+    "set_seed(A,B);").
+set_seed(A, B, !IO) :-
+    promise_pure (
+        impure set_seed_impure(A, B),
+        !:IO = !.IO
+    ). 
 
 :- pragma foreign_proc("C",
     sign(X::in) = (Sign_::out),
