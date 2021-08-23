@@ -3,7 +3,7 @@
 %% Licence: GPL-3
 %% Author: Mark Clements
 %% Date: 2021-08-23
-%% Version: 0.1.0
+%% Version: 0.1.1
 
 :- module rmath.
 
