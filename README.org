@@ -1,34 +1,41 @@
-* mercury-rmath library
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
 
-** Introduction
+#+title: mercury-rmath: Mercury library for the standalone Rmath library
+#+author: Mark Clements
 
-This is a alpha quality Mercury library for using the standalone =Rmath= library. The library is based on C and the installation is currently only for the =ast_fast.gc= grade.
+#+options: num:nil
 
-This has been tested on Linux with the Rmath library installed. On Ubuntu/Debian, you would need =apt install r-mathlib=.
+* Introduction
+
+This is an alpha quality Mercury library for using the standalone =Rmath= library. The library is based on C and the installation is currently only for the =ast_fast.gc= grade.
+
+This has been tested on Linux with the Rmath library installed. On Ubuntu/Debian, you would need =apt install r-mathlib=. For the lib and cflags paths below, I have also used =pkg-config=.
 
 Feedback is welcome.
 
-** Installation
+* Installation
 
 For an installation in the local directory, use =make install=, which is currently defined as:
 
 #+BEGIN_SRC sh :results output echo :exports both
-  rm -rf Mercury lib
+  rm -rf Mercury lib # is this required?
   mmc --make  --c-include-directory `pkg-config --cflags libRmath` `pkg-config --libs libRmath` --no-libgrade --libgrade asm_fast.gc --install-prefix . librmath.install
 #+END_SRC
 
 #+RESULTS:
 
+To install to the main Mercury library, remove: =--install-prefix .=
 
-** Documentation
+* Documentation
 
 See the interface in https://github.com/mclements/mercury-rmath/blob/main/rmath.m.
 
-** Test
+* Test
 
 As an extended test file:
 
-#+BEGIN_SRC sh :results output echo :exports both
+#+BEGIN_SRC sh :results output echo :exports output
 cat test_rmath.m
 #+END_SRC
 
@@ -41,14 +48,14 @@ cat test_rmath.m
 :- pred main(io::di, io::uo) is det.
 
 :- implementation.
-:- import_module list, int, float, string, maybe, solutions, math, rmath, pair, bool.
+:- import_module int, float, rmath, pair, bool.
 
 :- type alternative ---> two_sided ; less ; greater.
 :- pred poisson_ci(float::in, float::in, alternative::in, pair(float)::out).
 poisson_ci(X, Conflevel, Alternative, Interval) :-
     Alpha = (1.0-Conflevel)/2.0,
-    Pl = (func(Xi,Alphai) = (if Xi=0.0 then 0.0 else qgamma(Alphai,Xi, 1.0, 1, 0))),
-    Pu = (func(Xi,Alphai) = qgamma(1.0-Alphai, Xi+1.0, 1.0, 1, 0)),
+    Pl = (func(Xi,Alphai) = (if Xi=0.0 then 0.0 else rmath.qgamma(Alphai,Xi, 1.0, 1, 0))),
+    Pu = (func(Xi,Alphai) = rmath.qgamma(1.0-Alphai, Xi+1.0, 1.0, 1, 0)),
     Interval = (Alternative = less -> (0.0 - Pu(X, 1.0-Conflevel))
 	       ;
 	       Alternative = greater -> (Pl(X, 1.0-Conflevel) - 1.0)
@@ -63,41 +70,39 @@ count(Predicate, Start, Finish) = Result :-
     Result = for_loop(func(I, Y) = (if Predicate(I)=yes then Y+1 else Y), Start, Finish, 0).
 
 :- func loop1(int,float,float) = int.
-loop1(Ni,M,D) = (if dpois(float(Ni),M,0)>D then loop1(Ni*2,M,D) else Ni).
+loop1(Ni,M,D) = (if rmath.dpois(float(Ni),M,0)>D then loop1(Ni*2,M,D) else Ni).
 :- func poisson_test(float,float,float,alternative) = float.
 poisson_test(X, T, R, Alternative) = Result :-
     M = R*T,
-    (Alternative = less -> Result = ppois(X,M,1,0)
+    (Alternative = less -> Result = rmath.ppois(X,M,1,0)
     ;
-    Alternative = greater -> Result = ppois(X-1.0,M,0,0)
+    Alternative = greater -> Result = rmath.ppois(X-1.0,M,0,0)
     ;
     %% Alternative = two_sided
     (M = 0.0 -> Result = (X=0.0 -> 1.0; 0.0)
 	   ;
 	   (Relerr = 1.00000001,
-            D = dpois(X,M,0),
+            D = rmath.dpois(X,M,0),
 	    Dstar = D * Relerr,
-	    Pred = (func(I) = (if dpois(float(I),M,0) =< Dstar then yes else no)),
+	    Pred = (func(I) = (if rmath.dpois(float(I),M,0) =< Dstar then yes else no)),
             (X=M -> Result = 1.0
 	     ;
 	     X<M ->
 	     (N = loop1(ceiling_to_int(2.0*M-X),M,D),
 	      Y = count(Pred, ceiling_to_int(M), N),
-	      Result = ppois(X,M,1,0) + ppois(float(N)-float(Y),M,0,0))
+	      Result = rmath.ppois(X,M,1,0) + rmath.ppois(float(N)-float(Y),M,0,0))
 	     ;
 	     %% X>M
 	     (Y = count(Pred,0,floor_to_int(M)),
-	      Result = ppois(float(Y)-1.0,M,1,0) + ppois(X-1.0, M,0,0)))))).
+	      Result = rmath.ppois(float(Y)-1.0,M,1,0) + rmath.ppois(X-1.0, M,0,0)))))).
 
 main(!IO) :-
     poisson_ci(5.0, 0.95, two_sided, Interval),
     P = poisson_test(5.0, 1.0, 1.0, two_sided),
     P2 = poisson_test(5.0, 10.0, 1.0, two_sided),
     io.write_line({m_e,
-		   pnorm(1.96, 0.0, 1.0, 1, 0),
-		   qnorm(0.975, 0.0, 1.0, 1, 0),
-		   %% runif(0.0, 1.0),
-		   %% runif(0.0, 1.0),
+		   rmath.pnorm(1.96, 0.0, 1.0, 1, 0),
+		   rmath.qnorm(0.975, 0.0, 1.0, 1, 0),
 		   Interval,
 		   P, P2
 		  },
@@ -107,8 +112,25 @@ main(!IO) :-
 This can be run using =make test=, which is currently defined as:
 
 #+BEGIN_SRC sh :results output echo :exports both
-mmc --make --mld ./lib/mercury --ml rmath `pkg-config --libs libRmath` -E test_rmath && ./test_rmath
+mmc --make --mld ./lib/mercury --ml rmath `pkg-config --libs libRmath` test_rmath && ./test_rmath
 #+END_SRC
 
 #+RESULTS:
 : {2.718281828459045, 0.9750021048517796, 1.9599639845400536, 1.6234863901184209 - 11.668332079322667, 0.0036598468273437144, 0.15054443581369478}
+
+To compare with R output:
+
+#+BEGIN_SRC R :output results :exports both
+  P = poisson.test(5)
+  P2 = poisson.test(5,10)
+  c(exp(1), pnorm(1.96), qnorm(0.975), P$conf.int[1], P$conf.int[2], P$p.value, P2$p.value)
+#+END_SRC
+
+#+RESULTS:
+|    2.71828182845905 |
+|    0.97500210485178 |
+|    1.95996398454005 |
+|    1.62348639011842 |
+|    11.6683320793227 |
+| 0.00365984682734371 |
+|   0.150544435813695 |
