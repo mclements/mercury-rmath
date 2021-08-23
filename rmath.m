@@ -1,3 +1,10 @@
+%% Title: mercury-rmath
+%% Description: Mercury library for the standalone Rmath library
+%% Licence: GPL-3
+%% Author: Mark Clements
+%% Date: 2021-08-23
+%% Version: 0.1.0
+
 :- module rmath.
 
 :- interface.
