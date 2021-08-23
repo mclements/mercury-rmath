@@ -50,6 +50,10 @@ cat test_rmath.m
 :- implementation.
 :- import_module int, float, rmath, pair, bool.
 
+%% %% example wrapper for a random number function
+%% :- impure pred wrapped_runif(float::in, float::in, float::out, io::di, io::uo).
+%% wrapped_runif(Lower, Upper, U, !IO) :- U = runif(Lower,Upper).
+
 :- type alternative ---> two_sided ; less ; greater.
 :- pred poisson_ci(float::in, float::in, alternative::in, pair(float)::out).
 poisson_ci(X, Conflevel, Alternative, Interval) :-
@@ -97,10 +101,13 @@ poisson_test(X, T, R, Alternative) = Result :-
 	      Result = rmath.ppois(float(Y)-1.0,M,1,0) + rmath.ppois(X-1.0, M,0,0)))))).
 
 main(!IO) :-
+    %% wrapped_runif(0.0, 1.0, U, !IO),
+    %% wrapped_runif(0.0, 1.0, U2, !IO),
     poisson_ci(5.0, 0.95, two_sided, Interval),
     P = poisson_test(5.0, 1.0, 1.0, two_sided),
     P2 = poisson_test(5.0, 10.0, 1.0, two_sided),
-    io.write_line({m_e,
+    io.write_line({ %% U, U2,
+		   m_e,
 		   rmath.pnorm(1.96, 0.0, 1.0, 1, 0),
 		   rmath.qnorm(0.975, 0.0, 1.0, 1, 0),
 		   Interval,
@@ -134,3 +141,8 @@ To compare with R output:
 |    11.6683320793227 |
 | 0.00365984682734371 |
 |   0.150544435813695 |
+
+
+* TODO Fix handling of state for the random number functions
+
+- At present, the random number functions for been marked as being impure, but they have not been wrapped using states. The example above has a draft outline of a wrapper, although this does not compile.
