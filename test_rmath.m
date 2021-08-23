@@ -58,12 +58,12 @@ poisson_test(X, T, R, Alternative) = Result :-
 	      Result = rmath.ppois(float(Y)-1.0,M,1,0) + rmath.ppois(X-1.0, M,0,0)))))).
 
 main(!IO) :-
-    %% wrapped_runif(0.0, 1.0, U, !IO),
-    %% wrapped_runif(0.0, 1.0, U2, !IO),
+    runif(0.0, 1.0, U, !IO),
+    runif(0.0, 1.0, U2, !IO),
     poisson_ci(5.0, 0.95, two_sided, Interval),
     P = poisson_test(5.0, 1.0, 1.0, two_sided),
     P2 = poisson_test(5.0, 10.0, 1.0, two_sided),
-    io.write_line({ %% U, U2,
+    io.write_line({U, U2,
 		   m_e,
 		   rmath.pnorm(1.96, 0.0, 1.0, 1, 0),
 		   rmath.qnorm(0.975, 0.0, 1.0, 1, 0),
