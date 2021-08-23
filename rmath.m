@@ -8,7 +8,7 @@
 :- module rmath.
 
 :- interface.
-:- import_module float, int.
+:- import_module float, int, io.
 % 1/pi
 :- func m_1_pi = float.
 % 1/sqrt(2pi)
@@ -58,11 +58,11 @@
 % sqrt(pi)
 :- func m_sqrt_pi = float.
 % Exponential random numbers
-:- func exp_rand = float.
+:- pred exp_rand(float::out,io::di,io::uo) is det.
 % Normal random numbers
-:- func norm_rand = float.
+:- pred norm_rand(float::out,io::di,io::uo) is det.
 % Uniform random numbers
-:- func unif_rand = float.
+:- pred unif_rand(float::out,io::di,io::uo) is det.
 % R_pow function: r_pow(X,Y)
 :- func r_pow(float,float) = float.
 % R_pow_di function: r_pow_di(X,Y)
@@ -143,8 +143,8 @@
 :- func ftrunc(float) = float.
 % gammafn: gammafn(X)
 :- func gammafn(float) = float.
-% get_seed: get_seed(A,B)
-:- impure pred get_seed(uint32::out,uint32::out) is semidet.
+% get_seed: get_seed(A,B,!IO)
+%% :- pred get_seed(uint32::out,uint32::out,io::di,io::uo) is semidet.
 % imax2: imax2(X,Y)
 :- func imax2(int,int) = int.
 % imin2: imin2(X,Y)
@@ -265,48 +265,48 @@
 :- func qweibull(float,float,float,int,int) = float.
 % Wilcoxon rank sum quantile function: qwilcox(P,M,N,Lower,Log)
 :- func qwilcox(float,float,float,int,int) = float.
-% Beta random numbers: rbeta(Shape1,Shape2)
-:- impure func rbeta(float,float) = float.
-% Binomial random numbers: rbinom(Size,Prob)
-:- impure func rbinom(float,float) = float.
-% Cauchy random numbers: rcauchy(Location,Scale)
-:- impure func rcauchy(float,float) = float.
-% Chi-squared random numbers: rchisq(Df)
-:- impure func rchisq(float) = float.
-% Exponential random numbers: rexp(Rate)
-:- impure func rexp(float) = float.
-% F random numbers: rf(Df1,Df2)
-:- impure func rf(float,float) = float.
-% Gamma random numbers: rgamma(Shape,Scale)
-:- impure func rgamma(float,float) = float.
-% Geometric random numbers: rgeom(Prob)
-:- impure func rgeom(float) = float.
-% Hypergeometric random numbers: rhyper(M,N,K)
-:- impure func rhyper(float,float,float) = float.
-% Log-normal random numbers: rlnorm(Meanlog,Sdlog)
-:- impure func rlnorm(float,float) = float.
-% Logistic random numbers: rlogis(Location,Scale)
-:- impure func rlogis(float,float) = float.
-% Negative Binomial random numbers: rnbinom(Size,Prob)
-:- impure func rnbinom(float,float) = float.
-% Non-central chi-squared random numbers: rnchisq(Df,Ncp)
-:- impure func rnchisq(float,float) = float.
-% Normal random numbers: rnorm(Mean,Sd)
-:- impure func rnorm(float,float) = float.
-% Poisson random numbers: rpois(Lambda)
-:- impure func rpois(float) = float.
-% Wilcoxon signed rank random numbers: rsignrank(N)
-:- impure func rsignrank(float) = float.
-% T random numbers: rt(Df)
-:- impure func rt(float) = float.
-% Uniform random numbers: runif(Min,Max)
-:- impure func runif(float,float) = float.
-% Weibull random numbers: rweibull(Shape,Scale)
-:- impure func rweibull(float,float) = float.
-% Wilcoxon rank sum random numbers: rwilcox(M,N)
-:- impure func rwilcox(float,float) = float.
-% set_seed: set_seed(A,B)
-:- impure pred set_seed(uint32::in,uint32::in) is semidet.
+% Beta random numbers: rbeta(Shape1,Shape2,Random,!IO)
+:- pred rbeta(float::in,float::in,float::out,io::di,io::uo) is det.
+% Binomial random numbers: rbinom(Size,Prob,Random,!IO)
+:- pred rbinom(float::in,float::in,float::out,io::di,io::uo) is det.
+% Cauchy random numbers: rcauchy(Location,Scale,Random,!IO)
+:- pred rcauchy(float::in,float::in,float::out,io::di,io::uo) is det.
+% Chi-squared random numbers: rchisq(Df,Random,!IO)
+:- pred rchisq(float::in,float::out,io::di,io::uo) is det.
+% Exponential random numbers: rexp(Rate,Random,!IO)
+:- pred rexp(float::in,float::out,io::di,io::uo) is det.
+% F random numbers: rf(Df1,Df2,Random,!IO)
+:- pred rf(float::in,float::in,float::out,io::di,io::uo) is det.
+% Gamma random numbers: rgamma(Shape,Scale,Random,!IO)
+:- pred rgamma(float::in,float::in,float::out,io::di,io::uo) is det.
+% Geometric random numbers: rgeom(Prob,Random,!IO)
+:- pred rgeom(float::in,float::out,io::di,io::uo) is det.
+% Hypergeometric random numbers: rhyper(M,N,K,Random,!IO)
+:- pred rhyper(float::in,float::in,float::in,float::out,io::di,io::uo) is det.
+% Log-normal random numbers: rlnorm(Meanlog,Sdlog,Random,!IO)
+:- pred rlnorm(float::in,float::in,float::out,io::di,io::uo) is det.
+% Logistic random numbers: rlogis(Location,Scale,Random,!IO)
+:- pred rlogis(float::in,float::in,float::out,io::di,io::uo) is det.
+% Negative Binomial random numbers: rnbinom(Size,Prob,Random,!IO)
+:- pred rnbinom(float::in,float::in,float::out,io::di,io::uo) is det.
+% Non-central chi-squared random numbers: rnchisq(Df,Ncp,Random,!IO)
+:- pred rnchisq(float::in,float::in,float::out,io::di,io::uo) is det.
+% Normal random numbers: rnorm(Mean,Sd,Random,!IO)
+:- pred rnorm(float::in,float::in,float::out,io::di,io::uo) is det.
+% Poisson random numbers: rpois(Lambda,Random,!IO)
+:- pred rpois(float::in,float::out,io::di,io::uo) is det.
+% Wilcoxon signed rank random numbers: rsignrank(N,Random,!IO)
+:- pred rsignrank(float::in,float::out,io::di,io::uo) is det.
+% T random numbers: rt(Df,Random,!IO)
+:- pred rt(float::in,float::out,io::di,io::uo) is det.
+% Uniform random numbers: runif(Min,Max,Random,!IO)
+:- pred runif(float::in,float::in,float::out,io::di,io::uo) is det.
+% Weibull random numbers: rweibull(Shape,Scale,Random,!IO)
+:- pred rweibull(float::in,float::in,float::out,io::di,io::uo) is det.
+% Wilcoxon rank sum random numbers: rwilcox(M,N,Random,!IO)
+:- pred rwilcox(float::in,float::in,float::out,io::di,io::uo) is det.
+% set_seed: set_seed(A,B,!IO)
+%% :- pred set_seed(uint32::in,uint32::in,io::di,io::uo) is semidet.
 % sign: sign(X)
 :- func sign(float) = float.
 % sinpi: sinpi(X)
@@ -326,6 +326,58 @@
 #define qnorm qnorm5
 #define dnorm dnorm4
 ").
+
+% exp_rand_impure: exp_rand_impure()
+:- impure func exp_rand_impure = float.
+% unif_rand_impure: unif_rand_impure()
+:- impure func unif_rand_impure = float.
+% norm_rand_impure: norm_rand_impure()
+:- impure func norm_rand_impure = float.
+% get_seed_impure: get_seed_impure(A,B)
+%% :- impure pred get_seed_impure(uint32::out,uint32::out) is semidet.
+% Beta random numbers: rbeta_impure(Shape1,Shape2)
+:- impure func rbeta_impure(float,float) = float.
+% Binomial random numbers: rbinom_impure(Size,Prob)
+:- impure func rbinom_impure(float,float) = float.
+% Cauchy random numbers: rcauchy_impure(Location,Scale)
+:- impure func rcauchy_impure(float,float) = float.
+% Chi-squared random numbers: rchisq_impure(Df)
+:- impure func rchisq_impure(float) = float.
+% Exponential random numbers: rexp_impure(Rate)
+:- impure func rexp_impure(float) = float.
+% F random numbers: rf_impure(Df1,Df2)
+:- impure func rf_impure(float,float) = float.
+% Gamma random numbers: rgamma_impure(Shape,Scale)
+:- impure func rgamma_impure(float,float) = float.
+% Geometric random numbers: rgeom_impure(Prob)
+:- impure func rgeom_impure(float) = float.
+% Hypergeometric random numbers: rhyper_impure(M,N,K)
+:- impure func rhyper_impure(float,float,float) = float.
+% Log-normal random numbers: rlnorm_impure(Meanlog,Sdlog)
+:- impure func rlnorm_impure(float,float) = float.
+% Logistic random numbers: rlogis_impure(Location,Scale)
+:- impure func rlogis_impure(float,float) = float.
+% Negative Binomial random numbers: rnbinom_impure(Size,Prob)
+:- impure func rnbinom_impure(float,float) = float.
+% Non-central chi-squared random numbers: rnchisq_impure(Df,Ncp)
+:- impure func rnchisq_impure(float,float) = float.
+% Normal random numbers: rnorm_impure(Mean,Sd)
+:- impure func rnorm_impure(float,float) = float.
+% Poisson random numbers: rpois_impure(Lambda)
+:- impure func rpois_impure(float) = float.
+% Wilcoxon signed rank random numbers: rsignrank_impure(N)
+:- impure func rsignrank_impure(float) = float.
+% T random numbers: rt_impure(Df)
+:- impure func rt_impure(float) = float.
+% Uniform random numbers: runif_impure(Min,Max)
+:- impure func runif_impure(float,float) = float.
+% Weibull random numbers: rweibull_impure(Shape,Scale)
+:- impure func rweibull_impure(float,float) = float.
+% Wilcoxon rank sum random numbers: rwilcox_impure(M,N)
+:- impure func rwilcox_impure(float,float) = float.
+% set_seed: set_seed_impure(A,B)
+%% :- impure pred set_seed_impure(uint32::in,uint32::in) is semidet.
+
 :- pragma foreign_proc("C",
     m_1_pi = (M_1_PI_::out),
     [promise_pure, will_not_call_mercury],
@@ -422,18 +474,6 @@
     m_sqrt_pi = (M_SQRT_PI_::out),
     [promise_pure, will_not_call_mercury],
     "M_SQRT_PI_ = M_SQRT_PI; ").
-:- pragma foreign_proc("C",
-    exp_rand = (Exp_rand_::out),
-    [promise_pure, will_not_call_mercury],
-    "Exp_rand_ = exp_rand(); ").
-:- pragma foreign_proc("C",
-    norm_rand = (Norm_rand_::out),
-    [promise_pure, will_not_call_mercury],
-    "Norm_rand_ = norm_rand(); ").
-:- pragma foreign_proc("C",
-    unif_rand = (Unif_rand_::out),
-    [promise_pure, will_not_call_mercury],
-    "Unif_rand_ = unif_rand(); ").
 :- pragma foreign_proc("C",
     r_pow(X::in,Y::in) = (R_pow_::out),
     [promise_pure, will_not_call_mercury],
@@ -590,10 +630,6 @@
     ftrunc(X::in) = (Ftrunc_::out),
     [promise_pure, will_not_call_mercury],
     "Ftrunc_ = ftrunc(X);").
-:- pragma foreign_proc("C",
-    get_seed(A::out,B::out),
-    [will_not_call_mercury],
-    "get_seed(&A,&B);").
 :- pragma foreign_proc("C",
     gammafn(X::in) = (Gammafn_::out),
     [promise_pure, will_not_call_mercury],
@@ -838,90 +874,233 @@
     qwilcox(P::in,M::in,N::in,Lower::in,Log::in) = (Qwilcox_::out),
     [promise_pure, will_not_call_mercury],
     "Qwilcox_ = qwilcox(P,M,N,Lower,Log);").
+
 :- pragma foreign_proc("C",
-    rbeta(Shape1::in,Shape2::in) = (Rbeta_::out),
+    exp_rand_impure = (Exp_rand_::out),
+    [will_not_call_mercury],
+    "Exp_rand_ = exp_rand(); ").
+exp_rand(R, !IO) :-
+    promise_pure (
+        impure R = exp_rand_impure,
+        !:IO = !.IO
+    ). 
+:- pragma foreign_proc("C",
+    norm_rand_impure = (Norm_rand_::out),
+    [will_not_call_mercury],
+    "Norm_rand_ = norm_rand(); ").
+norm_rand(R, !IO) :-
+    promise_pure (
+        impure R = norm_rand_impure,
+        !:IO = !.IO
+    ). 
+:- pragma foreign_proc("C",
+    unif_rand_impure = (Unif_rand_::out),
+    [will_not_call_mercury],
+    "Unif_rand_ = unif_rand(); ").
+unif_rand(R, !IO) :-
+    promise_pure (
+        impure R = unif_rand_impure,
+        !:IO = !.IO
+    ). 
+%% :- pragma foreign_proc("C",
+%%     get_seed_impure(A::out,B::out),
+%%     [will_not_call_mercury],
+%%     "get_seed(&A,&B);").
+%% get_seed(A, B, !IO) :-
+%%     promise_pure (
+%%         impure get_seed_impure(A,B),
+%%         !:IO = !.IO
+%%     ). 
+:- pragma foreign_proc("C",
+    rbeta_impure(Shape1::in,Shape2::in) = (Rbeta_::out),
     [will_not_call_mercury],
     "Rbeta_ = rbeta(Shape1,Shape2);").
+rbeta(Shape1, Shape2, R, !IO) :-
+    promise_pure (
+        impure R = rbeta_impure(Shape1,Shape2),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rbinom(Size::in,Prob::in) = (Rbinom_::out),
+    rbinom_impure(Size::in,Prob::in) = (Rbinom_::out),
     [will_not_call_mercury],
     "Rbinom_ = rbinom(Size,Prob);").
+rbinom(Size, Prob, R, !IO) :-
+    promise_pure (
+        impure R = rbinom_impure(Size,Prob),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rcauchy(Location::in,Scale::in) = (Rcauchy_::out),
+    rcauchy_impure(Location::in,Scale::in) = (Rcauchy_::out),
     [will_not_call_mercury],
     "Rcauchy_ = rcauchy(Location,Scale);").
+rcauchy(Location, Scale, R, !IO) :-
+    promise_pure (
+        impure R = rcauchy_impure(Location,Scale),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rchisq(Df::in) = (Rchisq_::out),
+    rchisq_impure(Df::in) = (Rchisq_::out),
     [will_not_call_mercury],
     "Rchisq_ = rchisq(Df);").
+rchisq(Df, R, !IO) :-
+    promise_pure (
+        impure R = rchisq_impure(Df),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rexp(Rate::in) = (Rexp_::out),
+    rexp_impure(Rate::in) = (Rexp_::out),
     [will_not_call_mercury],
     "Rexp_ = rexp(Rate);").
+rexp(Rate, R, !IO) :-
+    promise_pure (
+        impure R = rexp_impure(Rate),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rf(Df1::in,Df2::in) = (Rf_::out),
+    rf_impure(Df1::in,Df2::in) = (Rf_::out),
     [will_not_call_mercury],
     "Rf_ = rf(Df1,Df2);").
+rf(Df1, Df2, R, !IO) :-
+    promise_pure (
+        impure R = rf_impure(Df1,Df2),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rgamma(Shape::in,Scale::in) = (Rgamma_::out),
+    rgamma_impure(Shape::in,Scale::in) = (Rgamma_::out),
     [will_not_call_mercury],
     "Rgamma_ = rgamma(Shape,Scale);").
+rgamma(Shape, Scale, R, !IO) :-
+    promise_pure (
+        impure R = rgamma_impure(Shape,Scale),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rgeom(Prob::in) = (Rgeom_::out),
+    rgeom_impure(Prob::in) = (Rgeom_::out),
     [will_not_call_mercury],
     "Rgeom_ = rgeom(Prob);").
+rgeom(Prob, R, !IO) :-
+    promise_pure (
+        impure R = rgeom_impure(Prob),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rhyper(M::in,N::in,K::in) = (Rhyper_::out),
+    rhyper_impure(M::in,N::in,K::in) = (Rhyper_::out),
     [will_not_call_mercury],
     "Rhyper_ = rhyper(M,N,K);").
+rhyper(M,N,K,R, !IO) :-
+    promise_pure (
+        impure R = rhyper_impure(M,N,K),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rlnorm(Meanlog::in,Sdlog::in) = (Rlnorm_::out),
+    rlnorm_impure(Meanlog::in,Sdlog::in) = (Rlnorm_::out),
     [will_not_call_mercury],
     "Rlnorm_ = rlnorm(Meanlog,Sdlog);").
+rlnorm(Meanlog, Sdlog, R, !IO) :-
+    promise_pure (
+        impure R = rlnorm_impure(Meanlog,Sdlog),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rlogis(Location::in,Scale::in) = (Rlogis_::out),
+    rlogis_impure(Location::in,Scale::in) = (Rlogis_::out),
     [will_not_call_mercury],
     "Rlogis_ = rlogis(Location,Scale);").
+rlogis(Location, Scale, R, !IO) :-
+    promise_pure (
+        impure R = rlogis_impure(Location,Scale),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rnbinom(Size::in,Prob::in) = (Rnbinom_::out),
+    rnbinom_impure(Size::in,Prob::in) = (Rnbinom_::out),
     [will_not_call_mercury],
     "Rnbinom_ = rnbinom(Size,Prob);").
+rnbinom(Size, Prob, R, !IO) :-
+    promise_pure (
+        impure R = rnbinom_impure(Size,Prob),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rnchisq(Df::in,Ncp::in) = (Rnchisq_::out),
+    rnchisq_impure(Df::in,Ncp::in) = (Rnchisq_::out),
     [will_not_call_mercury],
     "Rnchisq_ = rnchisq(Df,Ncp);").
+rnchisq(Df, Ncp, R, !IO) :-
+    promise_pure (
+        impure R = rnchisq_impure(Df,Ncp),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rnorm(Mean::in,Sd::in) = (Rnorm_::out),
+    rnorm_impure(Mean::in,Sd::in) = (Rnorm_::out),
     [will_not_call_mercury],
     "Rnorm_ = rnorm(Mean,Sd);").
+rnorm(Mean, Sd, R, !IO) :-
+    promise_pure (
+        impure R = rnorm_impure(Mean,Sd),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rpois(Lambda::in) = (Rpois_::out),
+    rpois_impure(Lambda::in) = (Rpois_::out),
     [will_not_call_mercury],
     "Rpois_ = rpois(Lambda);").
+rpois(Lambda, R, !IO) :-
+    promise_pure (
+        impure R = rpois_impure(Lambda),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rsignrank(N::in) = (Rsignrank_::out),
+    rsignrank_impure(N::in) = (Rsignrank_::out),
     [will_not_call_mercury],
     "Rsignrank_ = rsignrank(N);").
+rsignrank(N, R, !IO) :-
+    promise_pure (
+        impure R = rsignrank_impure(N),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rt(Df::in) = (Rt_::out),
+    rt_impure(Df::in) = (Rt_::out),
     [will_not_call_mercury],
     "Rt_ = rt(Df);").
+rt(Df, R, !IO) :-
+    promise_pure (
+        impure R = rt_impure(Df),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    runif(Min::in,Max::in) = (Runif_::out),
+    runif_impure(Min::in,Max::in) = (Runif_::out),
     [will_not_call_mercury],
     "Runif_ = runif(Min,Max);").
+runif(Min, Max, R, !IO) :-
+    promise_pure (
+        impure R = runif_impure(Min, Max),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rweibull(Shape::in,Scale::in) = (Rweibull_::out),
+    rweibull_impure(Shape::in,Scale::in) = (Rweibull_::out),
     [will_not_call_mercury],
     "Rweibull_ = rweibull(Shape,Scale);").
+rweibull(Shape, Scale, R, !IO) :-
+    promise_pure (
+        impure R = rweibull_impure(Shape, Scale),
+        !:IO = !.IO
+    ). 
 :- pragma foreign_proc("C",
-    rwilcox(M::in,N::in) = (Rwilcox_::out),
+    rwilcox_impure(M::in,N::in) = (Rwilcox_::out),
     [will_not_call_mercury],
     "Rwilcox_ = rwilcox(M,N);").
-:- pragma foreign_proc("C",
-    set_seed(A::in,B::in),
-    [will_not_call_mercury],
-    "set_seed(A,B);").
+rwilcox(M, N, R, !IO) :-
+    promise_pure (
+        impure R = rwilcox_impure(M, N),
+        !:IO = !.IO
+    ). 
+%% :- pragma foreign_proc("C",
+%%     set_seed_impure(A::in,B::in),
+%%     [will_not_call_mercury],
+%%     "set_seed(A,B);").
+%% set_seed(A, B, !IO) :-
+%%     promise_pure (
+%%         impure set_seed_impure(A, B),
+%%         !:IO = !.IO
+%%     ). 
+
 :- pragma foreign_proc("C",
     sign(X::in) = (Sign_::out),
     [promise_pure, will_not_call_mercury],
