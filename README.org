@@ -12,6 +12,8 @@ This is an alpha quality Mercury library for using the standalone =Rmath= librar
 
 This has been tested on Linux with the Rmath library installed. On Ubuntu/Debian, you would need =apt install r-mathlib=. For the lib and cflags paths below, I have also used =pkg-config=.
 
+Following the R language, I have used a GPL licence.
+
 Feedback is welcome.
 
 * Installation
